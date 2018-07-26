@@ -1,0 +1,43 @@
+{
+  "name": "amq.rabbitmq.reply-to.js",
+  "version": "1.0.0",
+  "description": "Direct reply-to is a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "tsc; node ./spec/runjasmine.js",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quobject/amq.rabbitmq.reply-to.js.git"
+  },
+  "keywords": [
+    "rabbitmq",
+    "rpc"
+  ],
+  "author": "Matthias Ludwig <mludwig@quobject.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Quobject/amq.rabbitmq.reply-to.js/issues"
+  },
+  "homepage": "https://github.com/Quobject/amq.rabbitmq.reply-to.js#readme",
+  "devDependencies": {
+    "@types/jasmine": "^2.8.3",
+    "@types/node": "^7.0.18",
+    "concurrently": "^3.4.0",
+    "jasmine": "^2.6.0",
+    "jasmine-pretty-html-reporter": "^0.2.5",
+    "onchange": "^4.0.0",
+    "reload": "^2.0.0",
+    "ts-node": "^3.0.4",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@types/uuid": "^3.4.3",
+    "@types/amqplib": "^0.5.8",
+    "amqplib": "^0.5.2",
+    "rxjs": "^6.2.2",
+    "rxjs-compat": "^6.2.2",
+    "uuid": "^3.3.2"
+  }
+}
