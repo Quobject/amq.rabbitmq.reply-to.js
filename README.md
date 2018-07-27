@@ -2,8 +2,12 @@
 Direct reply-to is a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.
 
 
-[![npm](https://img.shields.io/npm/dw/localeval.svg)](https://www.npmjs.com/package/amq.rabbitmq.reply-to.js)
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][downloads-url]
 
+```
+npm i amq.rabbitmq.reply-to.js
+```
 
 # Example
 
@@ -33,3 +37,12 @@ import { RpcClient, RpcConsumer, RpcConsumerOptions } from 'amq.rabbitmq.reply-t
       done();
     });
 ```
+
+## License
+
+MIT
+
+[npm-image]: https://img.shields.io/npm/v/[downloads-url]: https://npmjs.org/package/docker-cli-js.svg?style=flat
+[npm-url]: https://npmjs.org/package/[downloads-url]: https://npmjs.org/package/docker-cli-js
+[downloads-image]: https://img.shields.io/npm/dm/[downloads-url]: https://npmjs.org/package/docker-cli-js?style=flat
+[downloads-url]: https://npmjs.org/package/[downloads-url]: https://npmjs.org/package/docker-cli-js
