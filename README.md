@@ -34,7 +34,6 @@ import { RpcClient, RpcConsumer, RpcConsumerOptions } from 'amq.rabbitmq.reply-t
       const replies: TestMessageReply[] = data;
 
       console.log('replies', replies);
-      done();
     });
 ```
 
@@ -42,7 +41,7 @@ import { RpcClient, RpcConsumer, RpcConsumerOptions } from 'amq.rabbitmq.reply-t
 
 MIT
 
-[npm-image]: https://img.shields.io/npm/v/[downloads-url]: https://npmjs.org/package/docker-cli-js.svg?style=flat
-[npm-url]: https://npmjs.org/package/[downloads-url]: https://npmjs.org/package/docker-cli-js
-[downloads-image]: https://img.shields.io/npm/dm/[downloads-url]: https://npmjs.org/package/docker-cli-js?style=flat
-[downloads-url]: https://npmjs.org/package/[downloads-url]: https://npmjs.org/package/docker-cli-js
+[npm-image]: https://img.shields.io/npm/v/amq.rabbitmq.reply-to.js.svg?style=flat
+[npm-url]: https://npmjs.org/package/amq.rabbitmq.reply-to.js
+[downloads-image]: https://img.shields.io/npm/dm/amq.rabbitmq.reply-to.js.svg?style=flat
+[downloads-url]: https://npmjs.org/package/amq.rabbitmq.reply-to.js
