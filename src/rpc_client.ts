@@ -43,12 +43,8 @@ export class RpcClient {
     let conn!: Connection;
 
     return Promise.resolve().then(() => {
-      //console.log(`${RpcClient.DISPLAY_STRING} (${this.id}) about to connect`);
-
       return connect(this.options.url);
     }).then((connp: Connection) => {
-      //console.log('QsMessageQueue connp =' + util.inspect(connp));
-      //console.log(`${RpcClient.DISPLAY_STRING} (${this.GetId()}) connected`);
       conn = connp;
       return conn.createChannel();
     }).then((ch: Channel) => {
@@ -75,17 +71,12 @@ export class RpcClient {
         this.responseEmitter.once(correlationId, resolve);
       });
     }).then((data: any) => {
-      //console.log('RpcClient sendRPCMessage data', data);
-      //console.log('RpcClient sendRPCMessage data.toString', data.toString());
       if (data) {
         return data.toString();
       }
       return '';
     });
   }
-
-
-
 }
 
 
