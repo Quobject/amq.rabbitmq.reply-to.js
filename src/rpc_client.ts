@@ -6,6 +6,7 @@ import { EventEmitter } from 'events';
 const RPC_QUEUE = 'rpc_queue';
 
 export class RpcClient {
+  private static readonly DISPLAY_STRING = 'RpcClient >----> xxxxxxxxxxx ';
   private static readonly REPLY_QUEUE = 'amq.rabbitmq.reply-to';
   private channel!: amqp.Channel;
   private responseEmitter!: EventEmitter;
@@ -21,7 +22,7 @@ export class RpcClient {
 
       //self.logger.info('QsMessageQueue about to connect 2');
 
-      return amqp.connect('amqp://localhost');
+      return amqp.connect('amqp://127.0.0.1');
     }).then((connp: any) => {
       //console.log('QsMessageQueue connp =' + util.inspect(connp));
       conn = connp;
