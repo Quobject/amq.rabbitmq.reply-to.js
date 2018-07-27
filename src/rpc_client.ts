@@ -1,33 +1,57 @@
 import * as util from 'util';
-import * as amqp from 'amqplib';
+import { Channel, connect, Connection, Message } from 'amqplib';
 import { v4 as uuid } from 'uuid';
 import { EventEmitter } from 'events';
 
 const RPC_QUEUE = 'rpc_queue';
 
+export class RpcClientOptions {
+
+  public constructor(public url = 'amqp://127.0.0.1', public clientid = '') { }
+}
+
+
 export class RpcClient {
-  private static readonly DISPLAY_STRING = 'RpcClient >----> xxxxxxxxxxx ';
+  private static readonly DISPLAY_STRING = 'RpcClient >----> xxxxxxxxxxx';
   private static readonly REPLY_QUEUE = 'amq.rabbitmq.reply-to';
-  private channel!: amqp.Channel;
+  private static idCounter = 0;  
+
+  private constructor(private options: RpcClientOptions) {
+    if (this.options.clientid === '') {
+      this.options.clientid = `${RpcClient.idCounter++}`;
+    }
+  }
+
+  private channel!: Channel;
   private responseEmitter!: EventEmitter;
 
-  //public constructor() {}
+  public static Create(options: RpcClientOptions = new RpcClientOptions()): Promise<RpcClient> {
+    const result = new RpcClient(options);  
+    
+    return Promise.resolve().then(() => {
+      return result.createClient()
+    }).then(() => {
+      return result;
+    });
+  }
 
-  public createClient(): Promise<void> {
-    let conn!: amqp.Connection;
+  public GetId(): string {
+    return this.options.clientid;
+  }
+
+  private createClient(): Promise<void> {
+    let conn!: Connection;
 
     return Promise.resolve().then(() => {
-      console.log('RpcClient createClient about to connect');
+      //console.log(`${RpcClient.DISPLAY_STRING} (${this.id}) about to connect`);
 
-
-      //self.logger.info('QsMessageQueue about to connect 2');
-
-      return amqp.connect('amqp://127.0.0.1');
-    }).then((connp: any) => {
+      return connect(this.options.url);
+    }).then((connp: Connection) => {
       //console.log('QsMessageQueue connp =' + util.inspect(connp));
+      //console.log(`${RpcClient.DISPLAY_STRING} (${this.GetId()}) connected`);
       conn = connp;
       return conn.createChannel();
-    }).then((ch: amqp.Channel) => {
+    }).then((ch: Channel) => {
       this.channel = ch;
 
       // create an event emitter where rpc responses will be published by correlationId
@@ -44,6 +68,7 @@ export class RpcClient {
 
   public sendRPCMessage(message: string, rpcQueue: string = 'rpc_queue'): Promise<string> {
     const correlationId = uuid();
+
     return Promise.resolve().then(() => {
       this.channel.sendToQueue(rpcQueue, new Buffer(message), { correlationId, replyTo: RpcClient.REPLY_QUEUE });
       return new Promise((resolve) => {

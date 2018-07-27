@@ -2,59 +2,78 @@
 
 import * as util from 'util';
 import { Channel, connect, Connection, Message } from 'amqplib';
-//import { v4 as uuid } from 'uuid';
-import * as Rx from 'rxjs/Rx';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+
 
 const RPC_QUEUE = 'rpc_queue';
 
+export class RpcConsumerOptions {
+
+  public constructor(public url = 'amqp://127.0.0.1', public consumerid = '',
+    public callback: (a: string, b: RpcConsumer) => Promise<string> = (a: string, b: RpcConsumer) => Promise.resolve(a)) { }
+
+}
+
 export class RpcConsumer {
 
-  constructor(private id: string = '0') {
-
+  private constructor(private options: RpcConsumerOptions) {
+    //console.log('RpcConsumerOptions options = ', options);
+    
+    if (this.options.consumerid === '') {
+      this.options.consumerid = `${RpcConsumer.idCounter++}`;
+    }
   }
 
-  private static readonly DISPLAY_STRING = 'xxxxxxxxx >----> RpcConsumer ';
+  private static readonly DISPLAY_STRING = 'xxxxxxxxx >----> RpcConsumer';
+  private static idCounter = 0; 
   private conn!: Connection;
 
+  public static Create(options: RpcConsumerOptions = new RpcConsumerOptions()): Promise<RpcConsumer> {
+    const result = new RpcConsumer(options);
 
+    return Promise.resolve().then(() => {
+      return result.startconsuming();
+    }).then(() => {
+      return result;
+    });
+  }
+
+  public GetId(): string {
+    return this.options.consumerid;
+  }
 
   //https://github.com/squaremo/amqp.node/blob/master/examples/tutorials/rpc_client.js
-  public call(): Promise<any> {
+  public startconsuming(): Promise<void> {
     const self = this;
     let channel: Channel;
 
     return Promise.resolve().then(() => {
-      console.log(`${RpcConsumer.DISPLAY_STRING} (${this.id}) about to connect`);
+      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) about to connect`);
 
       if (this.conn) {
         return this.conn;
       }
-      //self.logger.info('QsMessageQueue about to connect 2');
 
-      return connect('amqp://127.0.0.1');
-    }).then( (connp: any) => {
-      //console.log('QsMessageQueue connp =' + util.inspect(connp));
+      return connect(this.options.url);
+    }).then((connp: Connection) => {
+      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) connected`);
       self.conn = connp;
       return self.conn.createChannel();
     }).then((ch: Channel) => {
 
       ch.assertQueue(RPC_QUEUE, { durable: false });
       ch.prefetch(1);
-      console.log(`${RpcConsumer.DISPLAY_STRING} (${this.id}) Awaiting RPC requests`);
+      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) Awaiting RPC requests`);
       ch.consume(RPC_QUEUE, (msg: Message | null) => {
-        const n = parseInt(msg.content.toString(), 10);
+        if (msg === null) {
+          //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) msg === null`);
+          return;
+        }
 
-        console.log(`${RpcConsumer.DISPLAY_STRING} (${this.id}) got message "${msg.content}"`);
-
-        const r = 'todo';
-
-        Promise.resolve().then(() => {
-          return of().pipe(delay(1)).toPromise();
+        Promise.resolve().then(() => {   
+          return this.options.callback(msg.content.toString(), this);
         }).then((data: any) => {
           ch.sendToQueue(msg.properties.replyTo,
-            new Buffer(r.toString()),
+            new Buffer(data),
             { correlationId: msg.properties.correlationId });
 
           ch.ack(msg);
