@@ -5,7 +5,6 @@ export declare class RpcClientOptions {
 }
 export declare class RpcClient {
     private options;
-    private static readonly DISPLAY_STRING;
     private static readonly REPLY_QUEUE;
     private static idCounter;
     private constructor();

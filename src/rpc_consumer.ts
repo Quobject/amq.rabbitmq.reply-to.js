@@ -16,8 +16,6 @@ export class RpcConsumerOptions {
 export class RpcConsumer {
 
   private constructor(private options: RpcConsumerOptions) {
-    //console.log('RpcConsumerOptions options = ', options);
-    
     if (this.options.consumerid === '') {
       this.options.consumerid = `${RpcConsumer.idCounter++}`;
     }
@@ -41,13 +39,10 @@ export class RpcConsumer {
     return this.options.consumerid;
   }
 
-  //https://github.com/squaremo/amqp.node/blob/master/examples/tutorials/rpc_client.js
   public startconsuming(): Promise<void> {
-    const self = this;
     let channel: Channel;
 
     return Promise.resolve().then(() => {
-      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) about to connect`);
 
       if (this.conn) {
         return this.conn;
@@ -55,17 +50,14 @@ export class RpcConsumer {
 
       return connect(this.options.url);
     }).then((connp: Connection) => {
-      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) connected`);
-      self.conn = connp;
-      return self.conn.createChannel();
+      this.conn = connp;
+      return this.conn.createChannel();
     }).then((ch: Channel) => {
 
       ch.assertQueue(RPC_QUEUE, { durable: false });
       ch.prefetch(1);
-      //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) Awaiting RPC requests`);
       ch.consume(RPC_QUEUE, (msg: Message | null) => {
         if (msg === null) {
-          //console.log(`${RpcConsumer.DISPLAY_STRING} (${this.GetId()}) msg === null`);
           return;
         }
 
