@@ -7,7 +7,6 @@ export declare class RpcConsumerOptions {
 export declare class RpcConsumer {
     private options;
     private constructor();
-    private static readonly DISPLAY_STRING;
     private static idCounter;
     private conn;
     static Create(options?: RpcConsumerOptions): Promise<RpcConsumer>;

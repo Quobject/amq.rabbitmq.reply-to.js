@@ -33,32 +33,32 @@ describe('Test rpc call', () => {
   });
 
 
-  //it('one consumer and one client', (done) => {
+  it('one consumer and one client', (done) => {
   
-  //  Promise.resolve().then(() => {
-  //    const consumerOptions = new RpcConsumerOptions(undefined, '',
-  //      consumerCallback()
-  //    );
-  //    return RpcConsumer.Create(consumerOptions);
-  //  }).then(() => {
-  //    return RpcClient.Create();
-  //  }).then((rpcClient: RpcClient) => {
-  //    const promises = [];      
+    Promise.resolve().then(() => {
+      const consumerOptions = new RpcConsumerOptions(undefined, '',
+        consumerCallback()
+      );
+      return RpcConsumer.Create(consumerOptions);
+    }).then(() => {
+      return RpcClient.Create();
+    }).then((rpcClient: RpcClient) => {
+      const promises = [];      
 
-  //    for (let i = 1; i <= 20; i++) {
-  //      const msg = new TestMessage(`${i}`, rpcClient.GetId(), i);
-  //      promises.push(rpcClient.sendRPCMessage(msg.ToJson()));
-  //    }
+      for (let i = 1; i <= 20; i++) {
+        const msg = new TestMessage(`${i}`, rpcClient.GetId(), i);
+        promises.push(rpcClient.sendRPCMessage(msg.ToJson()));
+      }
 
-  //    return Promise.all(promises);
-  //  }).then((data: any) => {
-  //    //console.log('data', data);
-  //    const replies: TestMessageReply[] = data;
+      return Promise.all(promises);
+    }).then((data: any) => {
+      //console.log('data', data);
+      const replies: TestMessageReply[] = data;
 
-  //    console.log('replies', replies);
-  //    done();
-  //  });
-  //});
+      console.log('replies', replies);
+      done();
+    });
+  });
 
 
   //it('two consumers and one client', (done) => {
