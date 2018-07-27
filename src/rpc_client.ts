@@ -10,9 +10,7 @@ export class RpcClientOptions {
   public constructor(public url = 'amqp://127.0.0.1', public clientid = '') { }
 }
 
-
 export class RpcClient {
-  private static readonly DISPLAY_STRING = 'RpcClient >----> xxxxxxxxxxx';
   private static readonly REPLY_QUEUE = 'amq.rabbitmq.reply-to';
   private static idCounter = 0;  
 
@@ -78,9 +76,3 @@ export class RpcClient {
     });
   }
 }
-
-
-
-
-
-
