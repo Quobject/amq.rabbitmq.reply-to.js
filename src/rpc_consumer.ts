@@ -21,7 +21,6 @@ export class RpcConsumer {
     }
   }
 
-  private static readonly DISPLAY_STRING = 'xxxxxxxxx >----> RpcConsumer';
   private static idCounter = 0; 
   private conn!: Connection;
 
