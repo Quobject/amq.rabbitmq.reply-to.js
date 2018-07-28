@@ -1,5 +1,5 @@
 # amq.rabbitmq.reply-to.js
-* Uses direct reply-to - a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.
+* Uses direct `reply-to` - a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.
 
 * Creates an event emitter where rpc responses will be published by correlationId
 as suggested by https://github.com/squaremo/amqp.node/issues/259#issuecomment-230165144
@@ -13,7 +13,7 @@ npm i amq.rabbitmq.reply-to.js
 
 # Example
 
-**js**
+**javascript**
 ```js
 const rabbitmqreplyto = require('amq.rabbitmq.reply-to.js');
 
@@ -71,7 +71,7 @@ Promise.resolve().then(() => {
 
 **typescript**
 ```ts
-import { RpcClient, RpcServer, RpcServerOptions } from './index';
+import { RpcClient, RpcServer, RpcServerOptions } from 'amq.rabbitmq.reply-to.js';
 
 const serverCallbackTimesTen: ((a: string, b: RpcServer) => Promise<string>) =
   (message: string, rpcServer: RpcServer) => {
