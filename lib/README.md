@@ -1,6 +1,8 @@
 # amq.rabbitmq.reply-to.js
-Direct reply-to is a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.
+* Uses direct reply-to - a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.
 
+* Creates an event emitter where rpc responses will be published by correlationId
+as suggested by https://github.com/squaremo/amqp.node/issues/259#issuecomment-230165144
 
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
