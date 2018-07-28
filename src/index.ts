@@ -1,2 +1,2 @@
 export * from './rpc_client';
-export * from './rpc_consumer';
+export * from './rpc_server';

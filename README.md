@@ -11,31 +11,130 @@ npm i amq.rabbitmq.reply-to.js
 
 # Example
 
-```ts
-import { RpcClient, RpcConsumer, RpcConsumerOptions } from 'amq.rabbitmq.reply-to.js';
+**js**
+```js
+const rabbitmqreplyto = require('amq.rabbitmq.reply-to.js');
 
-    Promise.resolve().then(() => {
-      const consumerOptions = new RpcConsumerOptions(undefined, '',
-        consumerCallback()
-      );
-      return RpcConsumer.Create(consumerOptions);
-    }).then(() => {
-      return RpcClient.Create();
-    }).then((rpcClient: RpcClient) => {
-      const promises = [];      
+const serverCallbackTimesTen = (message, rpcServer) => {
+    const n = parseInt(message);
+    return Promise.resolve(`${n * 10}`);
+};
 
-      for (let i = 1; i <= 20; i++) {
-        const msg = new TestMessage(`${i}`, rpcClient.GetId(), i);
-        promises.push(rpcClient.sendRPCMessage(msg.ToJson()));
-      }
+let rpcServer;
+let rpcClient;
+Promise.resolve().then(() => {
+    const serverOptions = new rabbitmqreplyto.RpcServerOptions(
+    /* url */ undefined, 
+    /* serverId */ undefined, 
+    /* callback */ serverCallbackTimesTen);
 
-      return Promise.all(promises);
-    }).then((data: any) => {      
-      const replies: TestMessageReply[] = data;
+    return rabbitmqreplyto.RpcServer.Create(serverOptions);
+}).then((rpcServerP) => {
+    rpcServer = rpcServerP;
+    return rabbitmqreplyto.RpcClient.Create();
+}).then((rpcClientP) => {
+    rpcClient = rpcClientP;
+    const promises = [];
+    for (let i = 1; i <= 20; i++) {
+        promises.push(rpcClient.sendRPCMessage(`${i}`));
+    }
+    return Promise.all(promises);
+}).then((replies) => {
+    console.log(replies);
+    return Promise.all([rpcServer.Close(), rpcClient.Close()]);
+});
 
-      console.log('replies', replies);
-    });
+//['10',
+//  '20',
+//  '30',
+//  '40',
+//  '50',
+//  '60',
+//  '70',
+//  '80',
+//  '90',
+//  '100',
+//  '110',
+//  '120',
+//  '130',
+//  '140',
+//  '150',
+//  '160',
+//  '170',
+//  '180',
+//  '190',
+//  '200']
+
 ```
+
+**typescript**
+```ts
+import { RpcClient, RpcServer, RpcServerOptions } from './index';
+
+const serverCallbackTimesTen: ((a: string, b: RpcServer) => Promise<string>) =
+  (message: string, rpcServer: RpcServer) => {
+    const n = parseInt(message);
+    return Promise.resolve(`${n * 10}`);
+  };
+
+let rpcServer: RpcServer;
+let rpcClient: RpcClient;
+
+Promise.resolve().then(() => {
+  const serverOptions = new RpcServerOptions(
+    /* url */ undefined,
+    /* serverId */ undefined,
+    /* callback */ serverCallbackTimesTen
+  );
+
+  return RpcServer.Create(serverOptions);
+}).then((rpcServerP: RpcServer) => {
+  rpcServer = rpcServerP;
+  return RpcClient.Create();
+}).then((rpcClientP: RpcClient) => {
+  rpcClient = rpcClientP;
+  const promises = [];
+
+  for (let i = 1; i <= 20; i++) {        
+    promises.push(rpcClient.sendRPCMessage(`${i}`));
+  }
+
+  return Promise.all(promises);
+}).then((data: any) => {
+  const replies: TestMessageReply[] = data;
+
+  console.log('one server and one client times ten replies', replies);
+
+  return Promise.all([rpcServer.Close(), rpcClient.Close()]);
+});
+
+
+
+//['10',
+//  '20',
+//  '30',
+//  '40',
+//  '50',
+//  '60',
+//  '70',
+//  '80',
+//  '90',
+//  '100',
+//  '110',
+//  '120',
+//  '130',
+//  '140',
+//  '150',
+//  '160',
+//  '170',
+//  '180',
+//  '190',
+//  '200']
+
+```
+
+
+
 
 ## License
 

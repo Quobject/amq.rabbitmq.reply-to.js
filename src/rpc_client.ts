@@ -2,6 +2,7 @@ import * as util from 'util';
 import { Channel, connect, Connection, Message } from 'amqplib';
 import { v4 as uuid } from 'uuid';
 import { EventEmitter } from 'events';
+import { RpcServerOptions } from './rpc_server';
 
 const RPC_QUEUE = 'rpc_queue';
 
@@ -13,6 +14,7 @@ export class RpcClientOptions {
 export class RpcClient {
   private static readonly REPLY_QUEUE = 'amq.rabbitmq.reply-to';
   private static idCounter = 0;  
+  private connection!: Connection;
 
   private constructor(private options: RpcClientOptions) {
     if (this.options.clientid === '') {
@@ -35,6 +37,15 @@ export class RpcClient {
 
   public GetId(): string {
     return this.options.clientid;
+  }
+
+  public Close(): Promise<void> {
+    return Promise.resolve().then(() => {
+      if (this.connection) {
+        return this.connection.close();
+      }
+      return Promise.resolve();
+    });
   }
 
   private createClient(): Promise<void> {
@@ -60,11 +71,11 @@ export class RpcClient {
     });
   }
 
-  public sendRPCMessage(message: string, rpcQueue: string = 'rpc_queue'): Promise<string> {
+  public sendRPCMessage(message: string): Promise<string> {
     const correlationId = uuid();
 
     return Promise.resolve().then(() => {
-      this.channel.sendToQueue(rpcQueue, new Buffer(message), { correlationId, replyTo: RpcClient.REPLY_QUEUE });
+      this.channel.sendToQueue(RpcServerOptions.RPC_QUEUE, new Buffer(message), { correlationId, replyTo: RpcClient.REPLY_QUEUE });
       return new Promise((resolve) => {
         this.responseEmitter.once(correlationId, resolve);
       });
