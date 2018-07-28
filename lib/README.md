@@ -103,7 +103,7 @@ Promise.resolve().then(() => {
 }).then((data: any) => {
   const replies: TestMessageReply[] = data;
 
-  console.log('one server and one client times ten replies', replies);
+  console.log(replies);
 
   return Promise.all([rpcServer.Close(), rpcClient.Close()]);
 });

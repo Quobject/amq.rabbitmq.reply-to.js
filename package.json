@@ -1,6 +1,6 @@
 {
   "name": "amq.rabbitmq.reply-to.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Direct reply-to is a feature that allows RPC (request/reply) clients with a design similar to that demonstrated in tutorial 6 (https://www.rabbitmq.com/direct-reply-to.html) to avoid declaring a response queue per request.",
   "main": "./lib/index.js",
   "files": [
